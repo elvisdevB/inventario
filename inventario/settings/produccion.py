@@ -1,4 +1,4 @@
-from inventario.settings.base import *
+from inventario.settings.base import BASE_DIR
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
