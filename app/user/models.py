@@ -5,7 +5,7 @@ from crum import get_current_request
 
 from datetime import datetime
 
-from inventario.settings.base import MEDIA_URL, STATIC_URL
+from inventario.settings import MEDIA_URL, STATIC_URL
 
 # Create your models here.
 
@@ -37,4 +37,4 @@ class User(AbstractUser):
                 if 'group' not in request.session:
                     request.session['group'] = groups[0]
         except:
-            pass 
+            pass
