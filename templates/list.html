@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+{% load static %}
+
+{% block plugins_js %}
+<link rel="stylesheet" href="{% static 'plugins/datatables-1.10.20/css/dataTables.bootstrap4.min.css' %}"/>
+<link rel="stylesheet" href="{% static 'plugins/datatables-1.10.20/plugins/responsive-2.2.3/css/responsive.bootstrap4.min.css' %}"/>
+<script src="{% static 'plugins/datatables-1.10.20/js/jquery.dataTables.js' %}"></script>
+<script src="{% static 'plugins/datatables-1.10.20/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-1.10.20/plugins/responsive-2.2.3/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-1.10.20/plugins/responsive-2.2.3/js/responsive.bootstrap4.min.js' %}"></script>
+{% block js %}
+
+{% endblock js %}
+
+
+
+{% endblock %}
+
+{% block contenido %}
+<section class="section">
+    <div class="section-body">
+      <div class="row">
+        <div class="col-12 col-md-6 col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-bordered table-md" id="data">
+                  <thead>
+                    {% block thead %}
+                    
+                    {% endblock thead %}
+                  </thead>
+
+                  <tbody>
+                    {% block tbody %}
+                    
+                    {% endblock tbody %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="section-footer bg-whitesmoke br">
+      <a class="btn btn-success" href="{{ list_actualizar }}" style="cursor:pointer; color:white;"><i class="fas fa-sync-alt"></i> Actualizar</a>
+    </div>
+</section>
+{% endblock contenido %}

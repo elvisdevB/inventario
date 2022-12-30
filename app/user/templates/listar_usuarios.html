@@ -1,0 +1,22 @@
+{% extends 'list.html' %}
+{% load static %}
+{% block js %}
+    <script src="{% static 'listar_usuarios.js' %}"></script>
+{% endblock %}
+
+
+{% block thead %}
+<tr>
+    <th scope="col">Nro</th>
+    <th scope="col">Nombre completo</th>
+    <th scope="col">Username</th>
+    <th scope="col">Fecha de Registro</th>
+    <th scope="col">Imagen</th>
+    <th scope="col">Grupos</th>
+    <th scope="col">Opciones</th>
+</tr>
+{% endblock thead %}
+
+{% block tbody %}
+
+{% endblock tbody %}

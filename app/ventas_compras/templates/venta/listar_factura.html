@@ -1,0 +1,52 @@
+{% extends 'list.html' %}
+{% load static %}
+
+{% block js %}
+    <script src="{% static 'listar_compras.js' %}"></script>
+{% endblock js %}
+
+{% block thead %}
+<tr>
+  <th>Proveedor</th>
+  <th>Fecha Emision</th>
+  <th>Subtotal</th>
+  <th>IVA 12%</th>
+  <th>Total</th>
+  <th>Detalle</th>
+  <th></th>
+</tr>
+{% endblock thead %}
+
+{% block tbody %}
+
+{% endblock tbody %}
+
+{% block navStock %}
+<div class="modal fade" id="miModalDetalle" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Stocks del Producto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <table class="table table-bordered" id="tableDetalle">
+          <thead>
+              <tr>
+                <th>Fecha Ingreso</th>
+                <th>Nombre Producto</th>
+                <th>Cantidad</th>
+                <th>Subtotal</th>
+              </tr>
+          </thead>
+          <tbody>
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock navStock %}

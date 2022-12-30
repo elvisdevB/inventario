@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <style>
+        .img-invoice {
+            width: 50px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        .head {
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        #invoice thead tr th {
+            text-align: left;
+            border-bottom: 1px solid black;
+            border-top: 1px solid black;
+            padding-top: 4px;
+        }
+
+        #invoice thead tr {
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        #invoice tbody tr {
+            padding: 0;
+        }
+
+        .text-center{
+            text-align: center;
+        }
+    </style>
+    <body>
+        <img src="" class="img-invoice">
+        <p class="head">
+            {{ comp.name|upper }}<br>
+            {{ comp.ruc }}<br>
+            {{ comp.address|upper }}
+        </p>
+        <p>
+            <b>FACTURA:</b> {{ sale.id }}<br>
+            <b>FECHA DE VENTA:</b> {{ sale.fecha_emision }}<br>
+            <b>CLIENTE:</b> {{ sale.cod_proveedor.nombre|upper }}<br>
+            <b>DNI:</b> {{ sale.cod_proveedor.cod_proveedor }}<br>
+        </p>
+        <table id="invoice">
+            <thead>
+            <tr>
+                <th style="width: 10%;">CANT</th>
+                <th style="width: 15%;">P.UNITARIO</th>
+                <th style="width: 40%;">PRODUCTO</th>
+                <th style="width: 15%;">TOTAL</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for d in sale.entradas_set.all %}
+                <tr {% if forloop.first %}style="padding-top: 3px;" {% endif %}>
+                    <td class="text-center">{{ d.cantidad_ingreso_stock }}</td>
+                    <td class="text-center">${{ d.cod_producto.precio_unitario }}</td>
+                    <td>{{ d.cod_producto.nombre }}</td>
+                    <td>${{ d.subtotal }}</td>
+                </tr>
+            {% endfor %}
+            <tr style="border-top: 1px solid black; padding-top: 4px;">
+                <td colspan="3"><b>SUBTOTAL</b></td>
+                <td>{{ sale.subtotal }}</td>
+            </tr>
+            <tr style="padding-top: 0px;">
+                <td colspan="3"><b>IVA 12%</b></td>
+                <td>{{ sale.iva }}</td>
+            </tr>
+            <tr style="padding-top: 0px;">
+                <td colspan="3"><b>TOTAL A PAGAR</b></td>
+                <td>{{ sale.total }}</td>
+            </tr>
+            </tbody>
+        </table>
+        <table style="margin-top: 250px;">
+            <thead>
+            <tr>
+                <th>****GRACIAS POR SU COMPRA****</th>
+            </tr>
+            <tr>
+                <th>NOSE ACEPTAN CAMBIOS NI DEVOLUCIONES</th>
+            </tr>
+            </thead>
+        </table>
+    </body>
+</html>
