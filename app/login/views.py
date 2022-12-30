@@ -6,7 +6,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
-from inventario.settings import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
+from inventario.settings.base import LOGIN_REDIRECT_URL, LOGOUT_REDIRECT_URL
 # Create your views here.
 
 class LoginFormView(LoginView):
