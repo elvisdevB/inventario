@@ -5,6 +5,16 @@
 <script src="{% static 'listarProveedores.js' %}"></script>
 {% endblock js %}
 
+{% block boton_agregar %}
+<div class="section-header-breadcrumb">
+  <div class="breadcrumb-item">
+    <a href="{% url 'registrar_proveedor' %}" class="btn btn-success" title="Registrar nueva Especie">
+      <i class="fas fa-plus"></i> Nuevo Proveedor
+    </a>
+  </div>
+</div>
+{% endblock boton_agregar %}
+
 {% block thead %}
 <tr>
   <th>Identificacion</th>

@@ -19,6 +19,29 @@ function formatRepo(repo) {
 
     return option;
 }
+function format_repo_producto(repo) {
+    if (repo.loading) {
+        return repo.text;
+    }
+
+    var option = $(
+        '<div class="wrapper container">'+
+        '<div class="row">' +
+        '<div class="col-lg-1">' +
+        '<img src="' + repo.imagen + '" class="img-fluid img-thumbnail d-block mx-auto rounded">' +
+        '</div>' +
+        '<div class="col-lg-11 text-left shadow-sm">' +
+        //'<br>' +
+        '<p style="margin-bottom: 0;">' +
+        '<b>Nombre:</b> ' + repo.nombre + '<br>' +
+        '<b>Precio Unitario:</b> $' + repo.precio_unitario + '<br>' +
+        '</p>' +
+        '</div>' +
+        '</div>' +
+        '</div>');
+
+    return option;
+}
 
 var compra = {
     items :{
@@ -173,7 +196,8 @@ $(function () {
             },
         },
         placeholder: 'Ingrese el Codigo del Producto',
-        minimumInputLength: 1
+        minimumInputLength: 1,
+        templateResult: format_repo_producto
     }).on('select2:select', function (e) {
         e.preventDefault();
         console.clear();
@@ -206,12 +230,12 @@ $(function () {
         parameters.append('action', $('input[name="action"]').val());
         parameters.append('compra', JSON.stringify(compra.items));
 
-        submit_switalert_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function (response) {
+        registrar_informacion_ajax(window.location.pathname, parameters, function (response) {
             alert_action_switalert('Notificacion','¿Desea imprimir la voleta de venta?', function(){
                 window.open('/factura/volante/pdf/'+response.id+'/', '_blank')
-                location.href = '/';
+                location.href = '/factura/listar/factura/compra/';
             }, function(){
-                location.href = '/';
+                location.href = '/factura/listar/factura/compra/';
             })
         }); 
     });

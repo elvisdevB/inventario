@@ -1,3 +1,6 @@
+
+from datetime import datetime
+
 from django.shortcuts import render, redirect
 from django.views.generic import TemplateView, CreateView, ListView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -6,6 +9,7 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db import transaction
 
 from .models import Proveedor
 from .forms import RegistrarProveedorForm
@@ -34,9 +38,15 @@ class RegistrarProveedorView(ValidatePermissionRequiredMixin, LoginRequiredMixin
     def post(self, request,*args, **kwargs):
         data = {}
         try:
-            form = self.get_form()
-            data = form.save()
-            messages.success(request, "Se ha Registrado con exito")
+            with transaction.atomic():
+                proveedor = Proveedor()
+                proveedor.cod_proveedor = request.POST.get('cod_proveedor')
+                proveedor.nombre = request.POST.get('nombre')
+                proveedor.direccion = request.POST.get('direccion')
+                proveedor.email = request.POST.get('email')
+                proveedor.telefono = request.POST.get('telefono')
+                proveedor.save()
+                messages.success(request, "Se ha Registrado con exito")
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data,safe=False)
@@ -60,9 +70,17 @@ class ListarProveedoresView(ValidatePermissionRequiredMixin, LoginRequiredMixin,
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            data = []
-            for i in Proveedor.objects.all():
-                data.append(i.toJson())
+            action = request.POST['action']
+            if action == 'listar_proveedores':
+                data = []
+                for i in Proveedor.objects.all():
+                    data.append(i.toJson())
+            elif action == 'delete':
+                proveedor = Proveedor.objects.get(pk = request.POST['id'] )
+                proveedor.delete()
+                messages.success(request, "Proveedor eliminado con Exito")
+            else:
+                data['error'] = "No ha ingresado ninguna opccion"
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
@@ -76,23 +94,25 @@ class ListarProveedoresView(ValidatePermissionRequiredMixin, LoginRequiredMixin,
 class EditarProveedorView(ValidatePermissionRequiredMixin, LoginRequiredMixin, UpdateView):
     model = Proveedor
     form_class = RegistrarProveedorForm
-    template_name = "registrar_proveedor.html"
+    template_name = "editar_proveedor.html"
     permission_required= 'change_proveedor'
     success_url = reverse_lazy('listar_proveedor')
 
     def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
         return super().dispatch(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
         data = {}
         try:
-            form = self.get_form()
-            if form.is_valid():
-                data = form.save()
+            with transaction.atomic():
+                proveedor = Proveedor.objects.get(pk = kwargs['pk'])
+                proveedor.cod_proveedor = request.POST.get('cod_proveedor')
+                proveedor.nombre = request.POST.get('nombre')
+                proveedor.direccion = request.POST.get('direccion')
+                proveedor.email = request.POST.get('email')
+                proveedor.telefono = request.POST.get('telefono')
+                proveedor.save()
                 messages.success(request, "Proveedor Editado con exito")
-            else:
-                data['error'] = form.errors
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
@@ -100,32 +120,8 @@ class EditarProveedorView(ValidatePermissionRequiredMixin, LoginRequiredMixin, U
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['titulo'] = "Editar Proveedor"
+        context['mensaje_informacion'] = "¿ Seguro de Editar este registro ?"
         context['success_url'] = self.success_url
         context['cancel_url'] = reverse_lazy('listar_proveedor')
         return context
 
-class EliminarProveedorView(ValidatePermissionRequiredMixin, LoginRequiredMixin, DeleteView):
-    model = Proveedor
-    template_name = 'eliminar_proveedor.html'
-    permission_required= 'delete_proveedor'
-    success_url = reverse_lazy('listar_proveedor')
-
-    def dispatch(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        return super().dispatch(request, *args, **kwargs)
-    
-    def post(self, request, *args, **kwargs):
-        data = {}
-        try:
-            self.object.delete()
-            messages.success(request, "Proveedor Eliminado con exito")
-        except Exception as e:
-            data['error'] = str(e)
-        return JsonResponse(data, safe=False)
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['titulo'] = "Eliminar Proveedor"
-        context['success_url'] = self.success_url
-        context['cancel_url'] = reverse_lazy('listar_proveedor')
-        return context

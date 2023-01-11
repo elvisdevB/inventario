@@ -1,4 +1,4 @@
-{% extends 'layout.html' %}
+{% extends 'form.html' %}
 {% load static %}
 
 {% block scripts %}
@@ -15,71 +15,14 @@
     <script src="{% static 'select_producto.js' %}"></script>
 {% endblock %}
 
-
-{% block contenido %}
-<section class="section">
-  <div class="section-body">
-    <h2 class="section-title">Crear Producto</h2>
-    <form method="POST" id="form">
-      <div class="row">
-        <div class="col-12 col-md-6 col-lg-6">
-          <div class="card">
-            <div class="card-header">
-              <h4>Producto</h4>
-            </div>
-            {% csrf_token %}
-            <div class="card-body">
-              <input type="hidden" name="action" value="{{ action }}">
-              <div class="form-group">
-                <label>{{ form.cod_proveedor.label }}</label>
-                {{ form.cod_proveedor }}
-              </div>
-              <div class="form-group">
-                <label>{{ form.cod_producto.label }}</label>
-                {{ form.cod_producto }}
-              </div>
-              <div class="form-group">
-                <label>{{ form.nombre.label }}</label>
-                {{ form.nombre }}
-              </div>
-              <div class="form-group">
-                <label>{{ form.precio_unitario.label }}</label>
-                {{ form.precio_unitario }}
-              </div>
-              <div class="form-group">
-                <label>{{ form.fecha_creacion.label }}</label>
-                {{ form.fecha_creacion }}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-md-6 col-lg-6">
-          <div class="card">
-            <div class="card-header">
-              <h4>Stock de Producto</h4>
-            </div>
-            <div class="card-body">
-              <div class="form-group">
-                <label>Ingrese la Cantidad de Stock en Unidades</label>
-                <input type="number" class="form-control" name="cant_stock" placeholder="Ingrese la cantidad de Stock del Producto">
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-md-6 col-lg-6">
-          <div class="card">
-            <div class="card-footer text-lefth">
-              <button type="submit" class="btn btn-success">
-                <i class="fas fa-cart-plus"></i> Registrar
-              </button>
-              <a href="{{ cancel_url }}" class="btn btn-danger">
-                <i class="fas fa-window-close"></i> Cancelar
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
-</section>
-{% endblock contenido %}
+{% block plugins_js %}
+<script>
+	$('#form').on('submit', function (e) {
+		e.preventDefault();
+		var parameters = new FormData(this)
+		registrar_informacion_ajax(window.location.pathname, parameters, function () {
+            location.href = '{{ success_url }}';
+        }); 
+	});
+</script>
+{% endblock %}

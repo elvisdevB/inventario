@@ -16,18 +16,48 @@ function message_error(obj) {
     });
 }
 
-function submit_switalert_ajax(url, title, content, parameters, callback) {
+function registrar_informacion_ajax(url, parameters, callback){
+    Swal.fire({
+        title: 'Procesando...',
+    });
+    Swal.showLoading();
+    $.ajax({
+        url: url, //window.location.pathname
+        type: 'POST',
+        data: parameters,
+        dataType: 'json',
+        processData: false,
+        contentType: false,
+    }).done(function (data) {
+        if (!data.hasOwnProperty('error')) {
+            callback(data);
+            console.log(data);
+            return false;
+        }
+        message_error(data.error);
+    }).fail(function (jqXHR, textStatus, errorThrown) {
+        alert(textStatus + ': ' + errorThrown);
+    }).always(function (data) {
+
+    });
+}
+
+function actions_switalert_ajax(url, title, content, parameters, callback) {
     Swal.fire({
         title:title,
         text: content,
         icon: 'question',
         showCancelButton:true,
-        confirmButtonText:"Enviar",
+        confirmButtonText:"Si",
         confirmButtonColor:'btn btn-success btn-lg btn-block',
         cancelButtonColor:'btn btn-danger btn-lg btn-block',
         backdrop:true,
         showLoaderOnConfirm:true,
         preConfirm: () => {
+            Swal.fire({
+                title: 'Procesando...',
+            });
+            Swal.showLoading();
             $.ajax({
                 url: url, //window.location.pathname
                 type: 'POST',
@@ -68,88 +98,9 @@ function alert_action_switalert(title, content, callback, cancel){
             callback();
         },
         allowOutsideClick:() => false,
-    });
-}
-
-/* function submit_with_ajax(url, title, content, parameters, callback) {
-    $.confirm({
-        theme: 'material',
-        title: title,
-        icon: 'fa fa-info',
-        content: content,
-        columnClass: 'small',
-        typeAnimated: true,
-        cancelButtonClass: 'btn-primary',
-        draggable: true,
-        dragWindowBorder: false,
-        buttons: {
-            info: {
-                text: "Si",
-                btnClass: 'btn-primary',
-                action: function () {
-                    $.ajax({
-                        url: url, //window.location.pathname
-                        type: 'POST',
-                        data: parameters,
-                        dataType: 'json',
-                        processData: false,
-                        contentType: false,
-                    }).done(function (data) {
-                        console.log(data);
-                        if (!data.hasOwnProperty('error')) {
-                            callback(data);
-                            return false;
-                        }
-                        message_error(data.error);
-                    }).fail(function (jqXHR, textStatus, errorThrown) {
-                        alert(textStatus + ': ' + errorThrown);
-                    }).always(function (data) {
-
-                    });
-                }
-            },
-            danger: {
-                text: "No",
-                btnClass: 'btn-red',
-                action: function () {
-
-                }
-            },
-        }
-    })
-}
- */
-
-
-
-
-
-/* function alert_action(title, content, callback, cancel) {
-    $.confirm({
-        theme: 'material',
-        title: title,
-        icon: 'fa fa-info',
-        content: content,
-        columnClass: 'small',
-        typeAnimated: true,
-        cancelButtonClass: 'btn-primary',
-        draggable: true,
-        dragWindowBorder: false,
-        buttons: {
-            info: {
-                text: "Si",
-                btnClass: 'btn-primary',
-                action: function () {
-                    callback();
-                }
-            },
-            danger: {
-                text: "No",
-                btnClass: 'btn-red',
-                action: function () {
-                    cancel();
-                }
-            },
+    }).then(function(result){
+        if(result.dismiss){
+            window.location.href = '/factura/listar/factura/compra'
         }
     });
-} */
+}

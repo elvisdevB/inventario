@@ -20,16 +20,6 @@ function formatRepo(repo) {
     return option;
 }
 
-var producto = {
-    product:{
-        cod_producto:'',
-        cod_proveedor:'',
-        nombre:'',
-        precio_unitario:'',
-        fecha_creacion:'',
-        cant_stock:'',
-    }
-}
 
 $(function () {
     /* Select - Autocomplete */
@@ -60,25 +50,4 @@ $(function () {
         templateResult: formatRepo
 
     });
-
-    /* Enviar Datos */
-    $('#form').on('submit', function (e) {
-        e.preventDefault();
-        
-        producto.product.cod_producto = $('input[name="cod_producto"]').val();
-        producto.product.cod_proveedor = $('select[name="cod_proveedor"]').val();
-        producto.product.nombre = $('input[name="nombre"]').val();
-        producto.product.precio_unitario = $('input[name="precio_unitario"]').val();
-        producto.product.fecha_creacion= $('input[name = "fecha_creacion"]').val();
-        producto.product.cant_stock = $('input[name="cant_stock"]').val();
-
-        var parameters = new FormData();
-        parameters.append('action', $('input[name="action"]').val());
-        parameters.append('producto', JSON.stringify(producto.product));
-
-        submit_switalert_ajax(window.location.pathname, 'Notificación', '¿Estas seguro de realizar la siguiente acción?', parameters, function () {
-            location.href = '/producto/listar/';
-        }); 
-    });
-
 });

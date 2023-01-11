@@ -5,6 +5,16 @@
 <script src="{% static 'listar_productos.js' %}"></script>
 {% endblock js %}
 
+{% block boton_agregar %}
+<div class="section-header-breadcrumb">
+  <div class="breadcrumb-item">
+    <a href="{% url 'registrar_producto' %}" class="btn btn-success" title="Registrar nueva Especie">
+      <i class="fas fa-plus"></i> Nuevo Producto
+    </a>
+  </div>
+</div>
+{% endblock boton_agregar %}
+
 {% block thead %}
 <tr>
   <th>Proveedor</th>
@@ -14,39 +24,9 @@
   <th>Fecha Creacion</th>
   <th>Stock</th>
   <th>Opcciones</th>
-  <th></th>
 </tr>
 {% endblock thead %}
 
 {% block tbody %}
 
 {% endblock tbody %}
-
-{% block navStock %}
-<div class="modal fade" id="miModalDetalle" tabindex="-1" role="dialog">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Stocks del Producto</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <table class="table table-bordered" id="tableDetalle">
-          <thead>
-              <tr>
-                  <th>Nombre Producto</th>
-                  <th>Cantidad en Stock del Producto</th>
-                  <th>Fecha Ingreso</th>
-              </tr>
-          </thead>
-          <tbody>
-
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
-</div>
-{% endblock navStock %}

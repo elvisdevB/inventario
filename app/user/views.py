@@ -71,6 +71,7 @@ class CrearUsuarioView(ValidatePermissionRequiredMixin, LoginRequiredMixin, Crea
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['action'] = 'add'
+        context['titulo'] = "Registrar Usuarios"
         context['cancel_url'] = reverse_lazy('listar_usuarios')
         context['success_url'] = self.success_url
         return context

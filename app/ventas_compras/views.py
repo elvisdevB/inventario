@@ -14,7 +14,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 import json
 from xhtml2pdf import pisa
 
-from app.producto.models import Producto, Stock
+from app.producto.models import Producto
 from app.proveedor.models import Proveedor
 
 from .models import FacturaEntrada, Entradas, FacturaSalidas, Salidas
@@ -72,11 +72,9 @@ class FacturaCompraView(ValidatePermissionRequiredMixin, LoginRequiredMixin, Cre
                         entrada.fecha_ingreso = factura_data['fecha_emision']
                         entrada.save()
 
-                        stock_antiguo = Stock.objects.filter(cod_producto_id=i['id']).last()
-                        stock_nuevo = Stock()
-                        stock_nuevo.cod_producto_id = i['id']
-                        stock_nuevo.cant_stock = stock_antiguo.cant_stock + i['cantidad']
-                        stock_nuevo.save()
+                        stock_antiguo = Producto.objects.get(pk=i['id'])
+                        stock_antiguo.stock = stock_antiguo.stock + i['cantidad']
+                        stock_antiguo.save()
 
                     data = {'id':factura.id}
 
@@ -196,14 +194,19 @@ class FacturaVentaView(ValidatePermissionRequiredMixin, LoginRequiredMixin, Crea
                         entrada.fecha_salida = factura_data['fecha_emision']
                         entrada.save()
 
-                        stock_antiguo = Stock.objects.filter(cod_producto_id=i['id']).last()
+                        stock_antiguo = Producto.objects.get(pk=i['id'])
+                        if(i['cantidad'] >= stock_antiguo.stock):
+                            raise forms.ValidationError("La cantidad solicitada sobrepasa el stock del producto " + stock_antiguo.nombre)
+                        stock_antiguo.stock = stock_antiguo.stock - i['cantidad']
+                        stock_antiguo.save()
+                        """ stock_antiguo = Stock.objects.filter(cod_producto_id=i['id']).last()
                         print(i['cantidad'])
                         if(i['cantidad'] >= stock_antiguo.cant_stock):
                             raise forms.ValidationError("La cantidad solicitada sobrepasa el stock del producto " + stock_antiguo.cod_producto.nombre)
                         stock_nuevo = Stock()
                         stock_nuevo.cod_producto_id = i['id']
                         stock_nuevo.cant_stock = stock_antiguo.cant_stock - i['cantidad']
-                        stock_nuevo.save()
+                        stock_nuevo.save() """
 
                     data = {'id':factura.id}
 

@@ -1,1 +1,13 @@
 {% extends 'form.html' %}
+
+{% block plugins_js %}
+<script>
+	$('#form').on('submit', function (e) {
+		e.preventDefault();
+		var parameters = new FormData(this)
+		registrar_informacion_ajax(window.location.pathname, parameters, function () {
+            location.href = '{{ success_url }}';
+        }); 
+	});
+</script>
+{% endblock %}

@@ -14,7 +14,7 @@ class FacturaEntrada(models.Model):
     fecha_emision = models.DateField(default = datetime.now)
 
     def __str__(self):
-        return self.cod_proveedor
+        return self.cod_proveedor.nombre
     
     def toJson(self):
         item = model_to_dict(self)
@@ -33,7 +33,7 @@ class Entradas(models.Model):
     fecha_ingreso = models.DateField(default= datetime.now)
 
     def __str__(self):
-        return self.cod_factura
+        return self.cod_factura.cod_proveedor.nombre
 
     def toJson(self):
         item = model_to_dict(self)
@@ -51,7 +51,7 @@ class FacturaSalidas(models.Model):
     fecha_emision = models.DateField(default = datetime.now)
 
     def __str__(self):
-        return self.cod_proveedor.cod_proveedor
+        return self.cod_proveedor.nombre
     
     def toJson(self):
         item = model_to_dict(self)
@@ -70,7 +70,7 @@ class Salidas(models.Model):
     fecha_salida = models.DateField(default= datetime.now)
 
     def __str__(self):
-        return self.cod_factura
+        return self.cod_factura.cod_proveedor.nombre
 
     def toJson(self):
         item = model_to_dict(self)

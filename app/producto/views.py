@@ -10,7 +10,7 @@ from django.contrib import messages
 from django.db import transaction
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Producto, Stock
+from .models import Producto
 from app.proveedor.models import Proveedor
 from .forms import RegistrarProductoForm, EditarProductoForm
 from app.user.mixins import ValidatePermissionRequiredMixin
@@ -41,22 +41,15 @@ class CrearProductoView(ValidatePermissionRequiredMixin, LoginRequiredMixin, Cre
                     data.append(item)
             elif action == 'add':
                 with transaction.atomic():
-                    productoItem = json.loads(request.POST['producto'])
-                    print(productoItem)
                     producto = Producto()
-                    producto.cod_producto = productoItem['cod_producto']
-                    producto.cod_proveedor_id = productoItem['cod_proveedor']
-                    producto.nombre = productoItem['nombre']
-                    producto.precio_unitario = productoItem['precio_unitario']
-                    producto.fecha_creacion = productoItem['fecha_creacion']
+                    producto.cod_producto = request.POST.get('cod_producto')
+                    producto.cod_proveedor_id = request.POST.get('cod_proveedor')
+                    producto.nombre = request.POST.get('nombre')
+                    producto.precio_unitario = request.POST.get('precio_unitario')
+                    producto.stock = int(request.POST.get('stock'))
+                    producto.imagen = request.FILES.get('imagen')
                     producto.save()
-
-                    #Stock
-                    stock = Stock()
-                    stock.cod_producto_id = producto.id
-                    stock.cant_stock = productoItem['cant_stock']
-                    stock.save()
-                    messages.success(request, "Producto Guardado con exito")
+                    messages.success(request, 'Producto creado con Exito')
                     
             else:
                 data['error'] = "Ha ocurrido un error"
@@ -85,14 +78,14 @@ class ListarProductosView(ValidatePermissionRequiredMixin, LoginRequiredMixin, L
         data = {}
         try:
             action = request.POST['action']
-            if action == 'verProductos':
+            if action == 'ver_productos':
                 data= []
                 for i in Producto.objects.all():
                     data.append(i.toJson())
-            elif action == 'ver_stock':
-                data = []
-                for i in Stock.objects.filter(cod_producto=request.POST['id']):
-                    data.append(i.toJson())
+            elif action == 'delete':
+                producto = Producto.objects.get(pk = request.POST['id'])
+                producto.delete()
+                messages.success(request, "Producto eliminado con Exito")
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data, safe=False)
@@ -120,6 +113,11 @@ class EditarProductoView(LoginRequiredMixin, UpdateView):
             if action == "edit":
                 producto = Producto.objects.get(pk = kwargs['pk'])
                 producto.cod_producto = request.POST.get('cod_producto')
+                producto.cod_proveedor_id = request.POST.get('cod_proveedor')
+                producto.nombre = request.POST.get('nombre')
+                producto.precio_unitario = request.POST.get('precio_unitario')
+                producto.stock = int(request.POST.get('stock'))
+                producto.imagen = request.FILES.get('imagen')
                 producto.save()
                 messages.success(request, "Producto editado con Exito")
             else:
@@ -132,6 +130,7 @@ class EditarProductoView(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['action'] = "edit"
+        context['mensaje_informacion'] = "¿ Seguro que desea Editar este registro ?"
         context['titulo'] = "Editar Producto"
         context['success_url'] = self.success_url
         context['cancel_url'] = reverse_lazy('listar_productos')

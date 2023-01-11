@@ -32,6 +32,9 @@
         <section class="section">
           <div class="section-header">
             <h1>{{ titulo }}</h1>
+            {% block boton_agregar %}
+            
+            {% endblock boton_agregar %}
           </div>
 
             {% block contenido %}
@@ -46,39 +49,6 @@
     </div>
   </div>
 
-    <!-- General JS Scripts -->
-    <script>
-      "{% if messages %}"
-          var html = '<p>';
-          "{% for message in messages %}"
-              html += '{{ message }}<br>';
-          "{% endfor %}"
-          html += '</p>';
-          Swal.fire({
-              title: 'Accion Exitosa',
-              html: html,
-              icon: 'success'
-          });
-      "{% endif %}"
-  </script>
-
-    <script>
-			"{% if form.errors %}"
-				var errors = '';
-				"{% for field in form %}"
-					"{% for error in field.errors %}"
-						errors += '{{ error }}\n';
-					"{% endfor %}"
-				"{% endfor %}"
-				Swal.fire({
-					title: 'Error!',
-					text: errors,
-					icon: 'error'
-				});
-			"{% endif %}"
-		</script>
-
-    
     <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'plugins/popper/popper.min.js' %}"></script>
     <script src="{% static 'plugins/tooltip.js' %}"></script>
@@ -104,6 +74,40 @@
     <script src="{% static 'js/custom.js' %}"></script>
     <script src="{% static 'js/function.js' %}"></script>
     {% block javascript %}
+
     {% endblock %}
+
+    <!-- General JS Scripts -->
+    <script>
+      "{% if messages %}"
+          var html = '<p>';
+          "{% for message in messages %}"
+              html += '{{ message }}<br>';
+          "{% endfor %}"
+          html += '</p>';
+          Swal.fire({
+              title: 'Accion Exitosa',
+              html: html,
+              icon: 'success'
+          });
+      "{% endif %}"
+    </script>    
+    
+    <script>
+      "{% if form.errors %}"
+        var errors = '';
+        "{% for field in form %}"
+          "{% for error in field.errors %}"
+            errors += '{{ error }}\n';
+          "{% endfor %}"
+        "{% endfor %}"
+        Swal.fire({
+          title: 'Error!',
+          text: errors,
+          icon: 'error'
+        });
+      "{% endif %}"
+    </script>
+        
 </body>
 </html>

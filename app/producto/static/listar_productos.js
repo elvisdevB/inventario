@@ -1,7 +1,7 @@
-var tablaProductos;
+var tabla_productos;
 
 $(function () {
-    tablaProductos = $('#data').DataTable({
+    tabla_productos = $('#data').DataTable({
         responsive:true,
         autoWidth:false,
         destroy:true,
@@ -10,7 +10,7 @@ $(function () {
             url:window.location.pathname,
             type:'POST',
             data:{
-                'action':'verProductos'
+                'action':'ver_productos'
             },
             dataSrc:''
         },
@@ -21,7 +21,7 @@ $(function () {
             {'data':'precio_unitario'},
             {'data':'fecha_creacion'},
             {'data':'stock'},
-            {'data':'buttons'},
+            {'data':'buttons'}
         ],
         columnDefs:[
             {
@@ -30,15 +30,7 @@ $(function () {
                 orderable: false,
                 render: function (data, type, row){
                     return '<a href="/producto/editar/'+ row.id +'/" class="btn btn-warning"><i class="fas fa-edit"></i></a>'+
-                    '<a href="/proveedor/eliminar/'+row.id+'/" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>';
-                }
-            },
-            {
-                targets : [-2],
-                class : "text-center",
-                orderable: false,
-                render: function (data, type, row){
-                    return '<a rel="stock" class="btn btn-success" style="cursor:pointer; color:white;"><i class="fas fa-truck"></i> Ver</a>';
+                    '<a href="#" rel="delete" class="btn btn-danger"><i class="fas fa-trash-alt"></i></a>';
                 }
             },
         ],
@@ -47,33 +39,14 @@ $(function () {
         }
     });
 
-    $('#data tbody').on('click', 'a[rel="stock"]', function () {
-        var tr = tablaProductos.cell($(this).closest('td , li')).index();
-        var data = tablaProductos.row(tr.row).data();
-        $('#tableDetalle').DataTable({
-            responsive:true,
-            autoWidth:false,
-            destroy:true,
-            deferRender:true,
-            ajax:{
-                url:window.location.pathname,
-                type:'POST',
-                data:{
-                    'action':'ver_stock',
-                    'id':data.id
-                },
-                dataSrc:''
-            },
-            columns:[
-                {'data':'cod_producto'},
-                {'data':'cant_stock'},
-                {'data':'fecha_ingreso'}
-            ],
-            initComplete: function(settings, json){
-        
-            }
+    $('#data tbody').on('click', 'a[rel="delete"]', function () {
+        var tr = tabla_productos.cell($(this).closest('td , li')).index();
+        var data = tabla_productos.row(tr.row).data();
+        var parametros = new FormData();
+        parametros.append('action', 'delete');
+        parametros.append('id', data.id)
+        actions_switalert_ajax(window.location.pathname, 'Notificación', '¿Desea eliminar el siguiente registro?', parametros, function () {
+            location.href = window.location.pathname;
         });
-        $('#miModalDetalle').modal('show');
     });
-
 });
